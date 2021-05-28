@@ -31,7 +31,7 @@ public class File {
   }
 
   public void read(Buffer buffer){
-    int leido = lowLevelFileSystem.syncReadFile(fileID, buffer.getBytes(), buffer.getStart(), buffer.getEnd());
+    int leido = lowLevelFileSystem.syncReadFile(fileID, buffer.getBytes(), buffer.getPosicionActual(), buffer.getEnd());
     buffer.moverPosicionActual(leido);
   }
 
