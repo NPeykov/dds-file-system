@@ -22,17 +22,14 @@ public class File {
   }
 
   public void write(Buffer buffer){
-    if(buffer.getPosicionActual() == -1)
-      throw new RuntimeException("Buffer vacio");
     lowLevelFileSystem.syncWriteFile(fileID, buffer.getBytes(), buffer.getStart(), buffer.getPosicionActual());
-    buffer.moverPosicionActual(1);
     //le paso posicion actual en el buffer ya que luego de eso no habria nada para escribir
     //muevo uno porque quedaria en el siguiente caracter luego de leer
   }
 
   public void read(Buffer buffer){
-    int leido = lowLevelFileSystem.syncReadFile(fileID, buffer.getBytes(), buffer.getPosicionActual(), buffer.getEnd());
-    buffer.moverPosicionActual(leido);
+    int leido = lowLevelFileSystem.syncReadFile(fileID, buffer.getBytes(), buffer.getStart(), buffer.getEnd());
+    buffer.limit(leido);
   }
 
   public void asyncRead(Buffer buffer, Consumer<Buffer> callback) {
@@ -43,7 +40,7 @@ public class File {
             buffer.getStart(),
             buffer.getEnd(),
             (leido) -> {
-              buffer.moverPosicionActual(leido);
+              buffer.limit(leido);
               callback.accept(buffer);
             }
         );
@@ -60,7 +57,6 @@ public class File {
             buffer.getStart(),
             buffer.getPosicionActual(),
             () -> {
-              buffer.moverPosicionActual(1);
               //callback.accept(buffer);
             }
         );

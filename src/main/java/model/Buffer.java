@@ -10,7 +10,7 @@ public class Buffer {
     if(size < 0)
       throw new RuntimeException("Tamaño de buffer invalido!");
     this.start = 0;
-    this.posicionActual = 0;
+    this.posicionActual = -1;
     this.end   = size - 1;
     this.bytes = new byte[size];
   }
@@ -32,14 +32,15 @@ public class Buffer {
   }
 
   public void moverPosicionActual(Integer offset) {
-    if(posicionActual == 0)
-      posicionActual += offset - 1;
-    else //para ajustar el indice 0
-      posicionActual += offset;
+    posicionActual += offset;
+  }
+
+  public void limit(int offset){
+    end = start + offset - 1;
   }
 
   public int espacioDisponible(){
-    return posicionActual - end + 1;
+    return bytes.length;
   }
 
 }
