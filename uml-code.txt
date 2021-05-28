@@ -1,0 +1,14 @@
+@startuml
+class File
+
+class LowLevelFileSystem 
+class HighLevelFileSystem
+class Buffer
+class UsedFiles
+
+File --> LowLevelFileSystem
+File ..> Buffer
+HighLevelFileSystem --> LowLevelFileSystem
+UsedFiles <-- HighLevelFileSystem
+UsedFiles --> "*" File
+@enduml
