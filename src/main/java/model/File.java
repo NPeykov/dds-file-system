@@ -1,5 +1,7 @@
 package model;
 
+import java.util.function.*;
+
 public class File {
   private String path;
   private String directory;
@@ -19,21 +21,10 @@ public class File {
     highLevelFileSystem.close(this);
   }
 
-  public void read(Buffer buffer){
-    int readBytes = lowLevelFileSystem.syncReadFile(fileID,
-        buffer.getBytes(),
-        buffer.getStart(),
-        buffer.getEnd());
-
-    if(readBytes < 0 || readBytes > buffer.capacidadDisponible())
-      throw new RuntimeException("Error al leer el archivo!");
-    buffer.limit(readBytes);
-  }
-
   public void write(Buffer buffer){
-    if(buffer.posicionActual() == -1)
+    if(buffer.getPosicionActual() == -1)
       throw new RuntimeException("Buffer vacio");
-    lowLevelFileSystem.syncWriteFile(fileID, buffer.getBytes(), buffer.getStart(), buffer.posicionActual());
+    lowLevelFileSystem.syncWriteFile(fileID, buffer.getBytes(), buffer.getStart(), buffer.getPosicionActual());
     buffer.moverPosicionActual(1);
     //le paso posicion actual en el buffer ya que luego de eso no habria nada para escribir
     //muevo uno porque quedaria en el siguiente caracter luego de leer
@@ -44,36 +35,35 @@ public class File {
     buffer.moverPosicionActual(leido);
   }
 
-  public void asyncRead(Buffer buffer, Consumer<Buffer> callback){
-    lowLevelFileSystem.asyncRead
-    (
-      fileID, 
-      buffer.getBytes(), 
-      buffer.getStart(), 
-      buffer.getEnd(), 
-      (leido) -> {
+  public void asyncRead(Buffer buffer, Consumer<Buffer> callback) {
+    lowLevelFileSystem.asyncReadFile
+        (
+            fileID,
+            buffer.getBytes(),
+            buffer.getStart(),
+            buffer.getEnd(),
+            (leido) -> {
               buffer.moverPosicionActual(leido);
               callback.accept(buffer);
-            };
-        
-    );
+            }
+        );
   }
 
-  public void asyncWrite(Buffer buffer, Runnable callback){
-    if(buffer.posicionActual() == -1)
+  public void asyncWrite(Buffer buffer, Runnable callback) {
+    if (buffer.getPosicionActual() == -1)
       throw new RuntimeException("Buffer vacio");
-    lowLevelFileSystem.asyncWrite
-    (
-      fileID, 
-      buffer.getBytes(), 
-      buffer.getStart(), 
-      buffer.getPosicionActual(), 
-      () -> {
+
+    lowLevelFileSystem.asyncWriteFile
+        (
+            fileID,
+            buffer.getBytes(),
+            buffer.getStart(),
+            buffer.getPosicionActual(),
+            () -> {
               buffer.moverPosicionActual(1);
-              callback.accept(buffer);
-            };
-        
-    );
+              //callback.accept(buffer);
+            }
+        );
   }
 
   //---------------------

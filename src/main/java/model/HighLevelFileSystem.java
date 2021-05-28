@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HighLevelFileSystem {
@@ -10,6 +11,8 @@ public class HighLevelFileSystem {
 
   public HighLevelFileSystem(LowLevelFileSystem lowLevelFileSystem) {
     this.lowLevelFileSystem = lowLevelFileSystem;
+    this.archivosAbiertos = new ArrayList<>();
+    this.historialArchivos = new ArrayList<>();
   }
 
   public File open(String path){
@@ -47,5 +50,13 @@ public class HighLevelFileSystem {
 
   String getDirectory(String path){
     return path.substring(0, path.lastIndexOf("/"));
+  }
+
+  public List<File> getArchivosAbiertos(){
+    return this.archivosAbiertos;
+  }
+
+  public List<File> getHistorialArchivos(){
+    return this.historialArchivos;
   }
 }

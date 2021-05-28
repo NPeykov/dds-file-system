@@ -4,7 +4,7 @@ public class Buffer {
   private byte[] bytes;
   private int start;
   private int end;
-  private int posicionActual;
+  private Integer posicionActual;
 
   public Buffer(int size){
     if(size < 0)
@@ -31,7 +31,7 @@ public class Buffer {
     return posicionActual;
   }
 
-  public void moverPosicionActual(int offset) {
+  public void moverPosicionActual(Integer offset) {
     posicionActual += offset;
   }
 

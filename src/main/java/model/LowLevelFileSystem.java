@@ -1,5 +1,7 @@
 package model;
 
+import java.util.function.Consumer;
+
 public interface LowLevelFileSystem {
   int openFile(String path);
   void closeFile(int fd);
